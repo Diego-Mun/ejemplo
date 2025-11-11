@@ -1,0 +1,21 @@
+make[1]: Entering directory '/home/ubuntu/infer'
+[16:31:59][ 117675] Running test: annotations target...
+[16:31:59][ 117703] Installing our LLVM OCaml bindings...
+[      0s][ 117675] SUCCESS Running test: annotations target
+[*ERROR**][117703] *** ERROR 'Installing our LLVM OCaml bindings'
+[*ERROR**][117703] *** command: ' opam update local-llvm && opam install --yes --no-depext llvm.$llvm_version'
+[*ERROR**][117703] *** CWD: '/home/ubuntu/infer'
+[*ERROR**][117703] *** stdout:
+[*ERROR**][117703] 
+[*ERROR**][117703] <><> Updating package repositories ><><><><><><><><><><><><><><><><><><><><><><>
+[*ERROR**][117703] [local-llvm] no changes from file:///home/ubuntu/infer/dependencies/llvm/opam-repository
+[*ERROR**][117703] *** stderr:
+[*ERROR**][117703] [ERROR] Package llvm has no version 20-static-infer.
+make[1]: *** [Makefile:506: clang_setup] Error 5
+make[1]: Leaving directory '/home/ubuntu/infer'
+make: *** [Makefile:500: opt] Error 2
+
+  compilation failure; you can try running
+
+    make clean
+    './build-infer.sh' 
