@@ -1,0 +1,31 @@
+# Compiler and flags
+CXX := g++
+CXXFLAGS := -std=c++20 -Wall -Wextra -pedantic
+BOTAN_LIB := $(shell pkg-config --cflags --libs botan-3 2>/dev/null)
+OPENSSL_LIB := -lssl -lcrypto
+
+OUTDIR := build
+LOGFILE := compile_errors.txt
+
+# Find all .cpp files recursively
+SRC := $(shell find . -type f -name "*.cpp")
+OBJS := $(patsubst ./%.cpp,$(OUTDIR)/%.o,$(SRC))
+
+# Default target
+all: $(OBJS)
+
+# Rule for each .cpp file
+$(OUTDIR)/%.o: ./%.cpp
+	@mkdir -p $(dir $@)
+	@libs=""
+	@if grep -qE '<botan/|Botan::' $<; then \
+		libs="$(BOTAN_LIB)"; \
+	elif grep -qE '<openssl/|<openssl' $<; then \
+		libs="$(OPENSSL_LIB)"; \
+	fi; \
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $$libs 2>> $(LOGFILE) || \
+	(echo "❌ Failed to compile: $<" >> $(LOGFILE))
+
+# Cleanup
+clean:
+	rm -rf $(OUTDIR) $(LOGFILE)
