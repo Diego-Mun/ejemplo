@@ -1,0 +1,28 @@
+# Compiler and flags
+CC := gcc
+CFLAGS := -std=c17 -Wall -Wextra -pedantic
+OPENSSL_LIBS := -lssl -lcrypto
+
+OUTDIR := build
+LOGFILE := compile_errors.txt
+
+# Find all .c files recursively
+SRC := $(shell find . -type f -name "*.c")
+OBJS := $(patsubst ./%.c,$(OUTDIR)/%.o,$(SRC))
+
+# Default target
+all: $(OBJS)
+
+# Rule for each .c file
+$(OUTDIR)/%.o: ./%.c
+	@mkdir -p $(dir $@)
+	@libs=""
+	@if grep -qE '<openssl/|<openssl' $<; then \
+		libs="$(OPENSSL_LIBS)"; \
+	fi; \
+	$(CC) $(CFLAGS) -c $< -o $@ $$libs 2>> $(LOGFILE) || \
+	(echo "❌ Failed to compile: $<" >> $(LOGFILE))
+
+# Cleanup
+clean:
+	rm -rf $(OUTDIR) $(LOGFILE)
